@@ -26,7 +26,8 @@ while (data > 0n)
 	i--;
 }
 //byteSizeMax на 1 байт больше необходимого:
-if (i + 1 !== zeros)
+i++;
+if (i !== zeros)
 {
 	outputData[i] = 0;
 	outputData = new Uint8Array(outputData.buffer, 1);
