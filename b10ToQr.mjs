@@ -6,7 +6,7 @@ const MAX_SIZE = 7089;
 let qrsInRow = Number(process.argv[2]);
 if (!qrsInRow) qrsInRow = 1;
 
-const inputData = await readStream(process.stdin).toString();
+const inputData = (await readStream(process.stdin)).toString();
 
 const html = `<!DOCTYPE html>
 <html lang="ru">
@@ -67,7 +67,7 @@ async function generateQR(text)
 
 async function readStream(stream)
 {
-	return new Promise((resolve, reject) =>
+	return await new Promise((resolve, reject) =>
 	{
 		const data = [];
 		stream.on('data', chunk =>
