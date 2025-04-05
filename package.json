@@ -1,0 +1,29 @@
+{
+  "name": "qr-paper",
+  "version": "1.0.0",
+  "description": "Набор скриптов для преобразования входных данных в набор qr-кодов с целью напечатать их на бумаге",
+  "keywords": [
+    "QR-codes",
+    "base10",
+    "paper",
+    "backup"
+  ],
+  "homepage": "https://github.com/Mendeo/qr-paper#readme",
+  "bugs": {
+    "url": "https://github.com/Mendeo/qr-paper/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mendeo/qr-paper.git"
+  },
+  "license": "MIT",
+  "author": "Mendeo",
+  "type": "module",
+  "main": "\"\"",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}
