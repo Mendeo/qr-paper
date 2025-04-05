@@ -5,6 +5,8 @@ const MAX_SIZE = 7089;
 
 let qrsInRow = Number(process.argv[2]);
 if (!qrsInRow) qrsInRow = 1;
+let qrMargin = Number(process.argv[3]);
+if (!qrMargin) qrMargin = 1;
 
 const inputData = (await readStream(process.stdin)).toString();
 
@@ -57,7 +59,7 @@ async function generateQR(text)
 	var data = [{ data: text, mode: 'numeric' }]
 	try
 	{
-		return await QRCode.toString(text, { type: 'svg', margin: 1, scale: 1, errorCorrectionLevel: 'L' });
+		return await QRCode.toString(text, { type: 'svg', margin: qrMargin, scale: 1, errorCorrectionLevel: 'L' });
 	}
 	catch (err)
 	{
