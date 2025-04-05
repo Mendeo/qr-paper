@@ -6,53 +6,50 @@ const MAX_SIZE = 7089;
 let qrsInRow = Number(process.argv[2]);
 if (!qrsInRow) qrsInRow = 1;
 
-readStream(process.stdin, buf =>
-{
-	const inputData = buf.toString();
+const inputData = await readStream(process.stdin).toString();
 
-	const html = `<!DOCTYPE html>
+const html = `<!DOCTYPE html>
 <html lang="ru">
 <head>
-	<title>QR for print</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR for print</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 ~!~</body>
 <style>
-	svg
-	{
-		max-height: 100vh;
-	}
-	div
-	{
-		display: flex;
-	}
+svg
+{
+	max-height: 100vh;
+}
+div
+{
+	display: flex;
+}
 </style>
 </html>
 `.split('~!~');
 
-	const parts = Math.ceil(inputData.length / MAX_SIZE);
-	let index = 0;
-	const qrCodes = [];
-	qrCodes.push('\t<div>\n');
-	for (let i = 0; i < parts; i++)
+const parts = Math.ceil(inputData.length / MAX_SIZE);
+let index = 0;
+const qrCodes = [];
+qrCodes.push('\t<div>\n');
+for (let i = 0; i < parts; i++)
+{
+	const nextIndex = index + MAX_SIZE;
+	const digits = inputData.slice(index, nextIndex);
+	index = nextIndex;
+	if (i > 0 && i % qrsInRow === 0)
 	{
-		const nextIndex = index + MAX_SIZE;
-		const digits = inputData.slice(index, nextIndex);
-		index = nextIndex;
-		if (i > 0 && i % qrsInRow === 0)
-		{
-			qrCodes.push('\t</div>\n');
-			qrCodes.push('\t<div>\n');
-		}
-		const qr = await generateQR(digits);
-		qrCodes.push('\t\t' + qr);
+		qrCodes.push('\t</div>\n');
+		qrCodes.push('\t<div>\n');
 	}
-	qrCodes.push('\t</div>\n');
+	const qr = await generateQR(digits);
+	qrCodes.push('\t\t' + qr);
+}
+qrCodes.push('\t</div>\n');
 
-	process.write.stdout(html[0] + qrCodes.join('') + html[1]);
-});
+process.stdout.write(html[0] + qrCodes.join('') + html[1]);
 
 async function generateQR(text)
 {
@@ -70,20 +67,21 @@ async function generateQR(text)
 
 async function readStream(stream)
 {
-	const data = [];
-	const result = new Promise();
-	stream.on('data', chunk =>
+	return new Promise((resolve, reject) =>
 	{
-		data.push(chunk);
-	});
-	stream.on('error', err =>
-	{
-		console.log('Data reading error: ' + err);
-		process.exit(1);
-	});
-	stream.on('end', () =>
-	{
-		callback(Buffer.concat(data));
-		
+		const data = [];
+		stream.on('data', chunk =>
+		{
+			data.push(chunk);
+		});
+		stream.on('error', err =>
+		{
+			reject('Data reading error: ' + err);
+			process.exit(1);
+		});
+		stream.on('end', () =>
+		{
+			resolve(Buffer.concat(data));
+		});
 	});
 }
