@@ -21,6 +21,7 @@ const html = `<!DOCTYPE html>
 svg
 {
 	max-height: 100vh;
+	max-width: calc(100% / ${qrsInRow});
 }
 div
 {
